@@ -1,0 +1,6 @@
+.idea
+.idea/*
+index.php
+composer.lock
+vendor
+vendor/*
