@@ -4,7 +4,7 @@ job-template: &job-template
 
     # Install system dependencies
     - run: sudo apt-get update
-    - run: sudo apt-get install libgmp10 -y
+    - run: sudo apt-get install libgmp-dev -y
 
     # Install PHP dependencies
     - run: sudo -E docker-php-ext-install gmp
