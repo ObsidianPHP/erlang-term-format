@@ -15,7 +15,7 @@ Minimal example:
 use Obsidian\ETF\ETF;
 
 // the binary erlang term format string (#PID<0.81.0>)
-$binary = \base64_decode("g2d3DW5vbm9kZUBub2hvc3QAAABRAAAAAAA=");
+$binary = base64_decode("g2d3DW5vbm9kZUBub2hvc3QAAABRAAAAAAA=");
 
 $etf = new ETF();
 $pid = $etf->decode($binary);
