@@ -2,6 +2,12 @@ job-template: &job-template
   steps:
     - checkout
 
+    # Install PHP dependencies
+    - run: sudo -E docker-php-ext-install gmp
+
+    # Enable PHP dependencies
+    - run: sudo -E docker-php-ext-enable gmp
+
     # Download and cache dependencies
     - restore_cache:
         keys:
