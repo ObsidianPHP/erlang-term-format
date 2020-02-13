@@ -11,7 +11,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php-64bit": ">=7.0",
+        "php-64bit": ">=7.1",
         "ext-gmp": "*",
         "ext-mbstring": "*"
     },
