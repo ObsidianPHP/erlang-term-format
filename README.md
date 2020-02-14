@@ -1,4 +1,4 @@
-# ETF [![CircleCI](https://circleci.com/gh/ObsidianPHP/ETF.svg?style=svg)](https://circleci.com/gh/ObsidianPHP/ETF)
+# ETF [![CircleCI](https://circleci.com/gh/ObsidianPHP/erlang-term-format.svg?style=svg)](https://circleci.com/gh/ObsidianPHP/erlang-term-format)
 
 PHP decoder and encoder for the Erlang Term Format.
 
