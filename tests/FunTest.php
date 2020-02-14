@@ -11,21 +11,13 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\Fun;
 use Obsidian\ETF\PID;
 use PHPUnit\Framework\TestCase;
 
 final class FunTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testFun(): void {
         // fake test for old fun
         $expected = new Fun(
@@ -37,8 +29,8 @@ final class FunTest extends TestCase {
             array('test')
         );
         
-        $test = $this->etf->encode($expected);
-        $decoded = $this->etf->decode($test);
+        $test = (new Encoder())->encode($expected);
+        $decoded = (new Decoder())->decode($test);
         
         $this->assertEquals($expected, $decoded);
     }

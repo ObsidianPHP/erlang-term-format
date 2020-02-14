@@ -11,21 +11,13 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\Exception;
 use Obsidian\ETF\UnknownTagException;
 use PHPUnit\Framework\TestCase;
 
 final class AtomTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testAtomMaxLength(): void {
         $this->expectException(Exception::class);
         
@@ -38,15 +30,15 @@ final class AtomTest extends TestCase {
         $data = "\x00";
         $pos = 0;
         
-        Atom::decodeIncrement($this->etf, $data, $pos);
+        Atom::decodeIncrement((new Decoder()), $data, $pos);
     }
     
     function testSmallUtf8AtomTrue(): void {
         $testt = \base64_decode("g3cEdHJ1ZQ==");
         $expectedt = true;
         
-        $decodedt = $this->etf->decode($testt);
-        $encodedt = $this->etf->encode($expectedt);
+        $decodedt = (new Decoder())->decode($testt);
+        $encodedt = (new Encoder())->encode($expectedt);
         
         $this->assertSame($expectedt, $decodedt);
         $this->assertSame($testt, $encodedt);
@@ -54,7 +46,7 @@ final class AtomTest extends TestCase {
         $bytest = \substr($testt, 1);
         $pos = 0;
         
-        $testt2 = Atom::decodeIncrement($this->etf, $bytest, $pos);
+        $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
         $this->assertSame($expectedt, $testt2);
     }
     
@@ -62,8 +54,8 @@ final class AtomTest extends TestCase {
         $testf = \base64_decode("g3cFZmFsc2U=");
         $expectedf = false;
         
-        $decodedf = $this->etf->decode($testf);
-        $encodedf = $this->etf->encode($expectedf);
+        $decodedf = (new Decoder())->decode($testf);
+        $encodedf = (new Encoder())->encode($expectedf);
         
         $this->assertSame($expectedf, $decodedf);
         $this->assertSame($testf, $encodedf);
@@ -73,8 +65,8 @@ final class AtomTest extends TestCase {
         $testn = \base64_decode("g3cDbmls");
         $expectedn = null;
         
-        $decodedn = $this->etf->decode($testn);
-        $encodedn = $this->etf->encode($expectedn);
+        $decodedn = (new Decoder())->decode($testn);
+        $encodedn = (new Encoder())->encode($expectedn);
         
         $this->assertSame($expectedn, $decodedn);
         $this->assertSame($testn, $encodedn);
@@ -84,8 +76,8 @@ final class AtomTest extends TestCase {
         $test = \base64_decode("g3YB7OKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYuuKYug==");
         $expected = new Atom("☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺☺");
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);
@@ -95,7 +87,7 @@ final class AtomTest extends TestCase {
         $testt = \base64_decode("g3YABHRydWU=");
         $expectedt = true;
         
-        $decodedt = $this->etf->decode($testt);
+        $decodedt = (new Decoder())->decode($testt);
         $encodedt = \chr(131).Atom::from($expectedt)->encodeBig();
         
         $this->assertSame($expectedt, $decodedt);
@@ -104,7 +96,7 @@ final class AtomTest extends TestCase {
         $bytest = \substr($testt, 1);
         $pos = 0;
         
-        $testt2 = Atom::decodeIncrement($this->etf, $bytest, $pos);
+        $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
         $this->assertSame($expectedt, $testt2);
     }
     
@@ -112,7 +104,7 @@ final class AtomTest extends TestCase {
         $testf = \base64_decode("g3YABWZhbHNl");
         $expectedf = false;
         
-        $decodedf = $this->etf->decode($testf);
+        $decodedf = (new Decoder())->decode($testf);
         $encodedf = \chr(131).Atom::from($expectedf)->encodeBig();
         
         $this->assertSame($expectedf, $decodedf);
@@ -123,7 +115,7 @@ final class AtomTest extends TestCase {
         $testn = \base64_decode("g3YAA25pbA==");
         $expectedn = null;
         
-        $decodedn = $this->etf->decode($testn);
+        $decodedn = (new Decoder())->decode($testn);
         $encodedn = \chr(131).Atom::from($expectedn)->encodeBig();
         
         $this->assertSame($expectedn, $decodedn);
@@ -134,7 +126,7 @@ final class AtomTest extends TestCase {
         $test = \base64_decode("g3MBYQ==");
         $expected = new Atom("a");
         
-        $decoded = $this->etf->decode($test);
+        $decoded = (new Decoder())->decode($test);
         $encoded = \chr(131).$expected->encodeSmallLatin();
         
         $this->assertEquals($expected, $decoded);
@@ -145,7 +137,7 @@ final class AtomTest extends TestCase {
         $testt = \base64_decode("g3MEdHJ1ZQ==");
         $expectedt = true;
         
-        $decodedt = $this->etf->decode($testt);
+        $decodedt = (new Decoder())->decode($testt);
         $encodedt = \chr(131).Atom::from($expectedt)->encodeSmallLatin();
         
         $this->assertSame($expectedt, $decodedt);
@@ -154,7 +146,7 @@ final class AtomTest extends TestCase {
         $bytest = \substr($testt, 1);
         $pos = 0;
         
-        $testt2 = Atom::decodeIncrement($this->etf, $bytest, $pos);
+        $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
         $this->assertSame($expectedt, $testt2);
     }
     
@@ -162,7 +154,7 @@ final class AtomTest extends TestCase {
         $testf = \base64_decode("g3MFZmFsc2U=");
         $expectedf = false;
         
-        $decodedf = $this->etf->decode($testf);
+        $decodedf = (new Decoder())->decode($testf);
         $encodedf = \chr(131).Atom::from($expectedf)->encodeSmallLatin();
         
         $this->assertSame($expectedf, $decodedf);
@@ -173,7 +165,7 @@ final class AtomTest extends TestCase {
         $testn = \base64_decode("g3MDbmls");
         $expectedn = null;
         
-        $decodedn = $this->etf->decode($testn);
+        $decodedn = (new Decoder())->decode($testn);
         $encodedn = \chr(131).Atom::from($expectedn)->encodeSmallLatin();
         
         $this->assertSame($expectedn, $decodedn);
@@ -184,7 +176,7 @@ final class AtomTest extends TestCase {
         $test = \base64_decode("g2QAAWE=");
         $expected = new Atom("a");
         
-        $decoded = $this->etf->decode($test);
+        $decoded = (new Decoder())->decode($test);
         $encoded = \chr(131).$expected->encodeLatin();
         
         $this->assertEquals($expected, $decoded);
@@ -195,7 +187,7 @@ final class AtomTest extends TestCase {
         $testt = \base64_decode("g2QABHRydWU=");
         $expectedt = true;
         
-        $decodedt = $this->etf->decode($testt);
+        $decodedt = (new Decoder())->decode($testt);
         $encodedt = \chr(131).Atom::from($expectedt)->encodeLatin();
         
         $this->assertSame($expectedt, $decodedt);
@@ -204,7 +196,7 @@ final class AtomTest extends TestCase {
         $bytest = \substr($testt, 1);
         $pos = 0;
         
-        $testt2 = Atom::decodeIncrement($this->etf, $bytest, $pos);
+        $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
         $this->assertSame($expectedt, $testt2);
     }
     
@@ -212,7 +204,7 @@ final class AtomTest extends TestCase {
         $testf = \base64_decode("g2QABWZhbHNl");
         $expectedf = false;
         
-        $decodedf = $this->etf->decode($testf);
+        $decodedf = (new Decoder())->decode($testf);
         $encodedf = \chr(131).Atom::from($expectedf)->encodeLatin();
         
         $this->assertSame($expectedf, $decodedf);
@@ -223,7 +215,7 @@ final class AtomTest extends TestCase {
         $testn = \base64_decode("g2QAA25pbA==");
         $expectedn = null;
         
-        $decodedn = $this->etf->decode($testn);
+        $decodedn = (new Decoder())->decode($testn);
         $encodedn = \chr(131).Atom::from($expectedn)->encodeLatin();
         
         $this->assertSame($expectedn, $decodedn);

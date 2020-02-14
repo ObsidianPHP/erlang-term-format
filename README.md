@@ -10,14 +10,14 @@ composer require obsidian/etf
 ```
 
 # Example
-Minimal example:
+Minimal decoding example:
 ```php
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
 
 // the binary erlang term format string (#PID<0.81.0>)
 $binary = base64_decode("g2d3DW5vbm9kZUBub2hvc3QAAABRAAAAAAA=");
 
-$etf = new ETF();
+$etf = new Decoder();
 $pid = $etf->decode($binary);
 
 var_dump($pid);
@@ -36,6 +36,23 @@ class Obsidian\ETF\PID#6 (4) {
     public $creation =>
     int(0)
 }
+*/
+```
+
+Minimal encoding example:
+```php
+use Obsidian\ETF\Atom;
+use Obsidian\ETF\Encoder;
+
+$value = new Atom('hello');
+
+$etf = new Encoder();
+$binary = $etf->encode($value);
+
+var_dump($binary);
+
+/*
+string(8) "w║hello"
 */
 ```
 

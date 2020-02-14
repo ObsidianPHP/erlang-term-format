@@ -28,12 +28,12 @@ abstract class BaseObject implements \ArrayAccess {
     
     /**
      * Decodes the ETF bytes array to an object.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return static
      */
-    abstract static function decode(ETF $etf, string $data, int &$pos);
+    abstract static function decode(Decoder $etf, string $data, int &$pos);
     
     /**
      * Encodes the object to ETF bytes array.

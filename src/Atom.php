@@ -100,7 +100,7 @@ class Atom extends BaseObject {
      * {@inheritdoc}
      * @return self|bool|null
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $tag = (isset($data[($pos - 1)]) ? $data[($pos - 1)] : null);
         
         switch($tag) {
@@ -126,12 +126,12 @@ class Atom extends BaseObject {
     
     /**
      * Decodes the ETF bytes array to an object, but with incrementing position.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return self
      */
-    static function decodeIncrement(ETF $etf, string $data, int &$pos) {
+    static function decodeIncrement(Decoder $etf, string $data, int &$pos) {
         $pos++;
         
         return static::decode($etf, $data, $pos);
@@ -139,13 +139,13 @@ class Atom extends BaseObject {
     
     /**
      * Decodes the ETF bytes array to an object.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return self|bool|null
      * @noinspection PhpUnusedParameterInspection
      */
-    static function decodeAtomUtf8(ETF $etf, string $data, int &$pos) {
+    static function decodeAtomUtf8(Decoder $etf, string $data, int &$pos) {
         $length = \unpack('n', $data[$pos++].$data[$pos])[1];
         
         $atom = '';
@@ -158,13 +158,13 @@ class Atom extends BaseObject {
     
     /**
      * Decodes the ETF bytes array to an object.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return self|bool|null
      * @noinspection PhpUnusedParameterInspection
      */
-    static function decodeSmallAtomUtf8(ETF $etf, string $data, int &$pos) {
+    static function decodeSmallAtomUtf8(Decoder $etf, string $data, int &$pos) {
         $length = \ord($data[$pos]);
         
         $atom = '';
@@ -177,13 +177,13 @@ class Atom extends BaseObject {
     
     /**
      * Decodes the ETF bytes array to an object.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return self|bool|null
      * @noinspection PhpUnusedParameterInspection
      */
-    static function decodeAtom(ETF $etf, string $data, int &$pos) {
+    static function decodeAtom(Decoder $etf, string $data, int &$pos) {
         $length = \unpack('n', $data[$pos++].$data[$pos])[1];
         
         $atom = '';
@@ -196,13 +196,13 @@ class Atom extends BaseObject {
     
     /**
      * Decodes the ETF bytes array to an object.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return self|bool|null
      * @noinspection PhpUnusedParameterInspection
      */
-    static function decodeSmallAtom(ETF $etf, string $data, int &$pos) {
+    static function decodeSmallAtom(Decoder $etf, string $data, int &$pos) {
         $length = \ord($data[$pos]);
         
         $atom = '';

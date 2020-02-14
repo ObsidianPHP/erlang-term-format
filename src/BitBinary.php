@@ -56,7 +56,7 @@ class BitBinary extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $length = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos++])[1];
         
         $bits = \ord($data[$pos]);

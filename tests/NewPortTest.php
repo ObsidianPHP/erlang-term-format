@@ -11,27 +11,19 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\NewPort;
 use PHPUnit\Framework\TestCase;
 
 final class NewPortTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testNewPort(): void {
         // #Port<0.1226>
         $test = \base64_decode("g1l3DW5vbm9kZUBub2hvc3QAAATKAAAAAA==");
         $expected = new NewPort((new Atom('nonode@nohost')), 1226, 0);
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);

@@ -65,7 +65,7 @@ class Reference extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $node = Atom::decodeIncrement($etf, $data, $pos);
         
         $pos++;
@@ -85,7 +85,7 @@ class Reference extends BaseObject {
      * {@inheritdoc}
      */
     function encode(): string {
-        $node = ETF::encodeAny($this->node);
+        $node = Encoder::encodeAny($this->node);
         
         $bid = \substr(\decbin($this->id), 0, 18);
         $id = \pack('N', \bindec($bid));

@@ -11,20 +11,12 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\Tuple;
 use PHPUnit\Framework\TestCase;
 
 final class TupleTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testTupleAccess(): void {
         $tuple = new Tuple(array(0, 5, 2, 'hi'));
         
@@ -54,8 +46,8 @@ final class TupleTest extends TestCase {
             'hehehe'
         ));
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);
@@ -72,7 +64,7 @@ final class TupleTest extends TestCase {
         $encoded = $tuple->encode();
         
         $pos = 1;
-        $decoded = Tuple::decode($this->etf, $encoded, $pos);
+        $decoded = Tuple::decode((new Decoder()), $encoded, $pos);
         
         $this->assertEquals($tuple, $decoded);
     }
@@ -84,14 +76,14 @@ final class TupleTest extends TestCase {
             $val = \bin2hex(\random_bytes(5));
         }
         
-        $test = $this->etf->encode((new Tuple($array)));
+        $test = (new Encoder())->encode((new Tuple($array)));
         $expected = new Tuple($array);
         
-        $decoded = $this->etf->decode($test);
+        $decoded = (new Decoder())->decode($test);
         $this->assertEquals($expected, $decoded);
         
         $pos = 2;
-        $decoded2 = Tuple::decode($this->etf, $test, $pos);
+        $decoded2 = Tuple::decode((new Decoder()), $test, $pos);
         
         $this->assertEquals($expected, $decoded2);
     }

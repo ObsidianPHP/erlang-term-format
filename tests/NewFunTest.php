@@ -11,22 +11,14 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\NewFun;
 use Obsidian\ETF\PID;
 use Obsidian\ETF\Tuple;
 use PHPUnit\Framework\TestCase;
 
 final class NewFunTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testNewFun(): void {
         // fn a -> a * 2 end
         $test = \base64_decode("g3AAAACtAb2Qtpq77M9gWRIioTSYENgAAAAGAAAAAXcIZXJsX2V2YWxhBmIF7IW0Z3cNbm9ub2RlQG5vaG9zdAAAAFEAAAAAAGgEancEbm9uZXcEbm9uZWwAAAABaAV3BmNsYXVzZWEKbAAAAAFoA3cDdmFyYQp3BFZhQDFqamwAAAABaAV3Am9wYQp3ASpoA3cDdmFyYQp3BFZhQDFoA3cHaW50ZWdlcmEAYQJqag==");
@@ -78,8 +70,8 @@ final class NewFunTest extends TestCase {
             )
         );
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);

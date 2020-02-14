@@ -74,7 +74,7 @@ class PID extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $node = Atom::decodeIncrement($etf, $data, $pos);
         
         $pos++;
@@ -90,7 +90,7 @@ class PID extends BaseObject {
      * {@inheritdoc}
      */
     function encode(): string {
-        $node = ETF::encodeAny($this->node);
+        $node = Encoder::encodeAny($this->node);
         $id = \pack('N', $this->id);
         $serial = \pack('N', $this->serial);
         

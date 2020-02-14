@@ -11,20 +11,12 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\Reference;
 use PHPUnit\Framework\TestCase;
 
 final class ReferenceTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testReference(): void {
         // fake test for reference
         $res = \curl_init();
@@ -40,8 +32,8 @@ final class ReferenceTest extends TestCase {
         $test = \pack('C*', ...$bytes);
         $expected = new Reference((new Atom(\get_resource_type($res))), $id, 0);
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($res);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($res);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);

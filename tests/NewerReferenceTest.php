@@ -11,20 +11,12 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\NewerReference;
 use PHPUnit\Framework\TestCase;
 
 final class NewerReferenceTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testNewerReference(): void {
         // #Reference<0.110178461.3583246337.247866>
         $test = \base64_decode("g1oAA3cNbm9ub2RlQG5vaG9zdAAAAAAAA8g61ZQAAQaRMJ0=");
@@ -36,8 +28,8 @@ final class NewerReferenceTest extends TestCase {
             )
         );
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);

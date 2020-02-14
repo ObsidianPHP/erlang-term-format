@@ -65,7 +65,7 @@ class Export extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $module = $etf->parseAny($data[$pos], $data, $pos);
         
         $pos++;
@@ -81,9 +81,9 @@ class Export extends BaseObject {
      * {@inheritdoc}
      */
     function encode(): string {
-        $module = ETF::encodeAny($this->module);
-        $function = ETF::encodeAny($this->function);
-        $arity = ETF::encodeAny($this->arity);
+        $module = Encoder::encodeAny($this->module);
+        $function = Encoder::encodeAny($this->function);
+        $arity = Encoder::encodeAny($this->arity);
         
         return ETF::EXPORT_EXT.$module.$function.$arity;
     }

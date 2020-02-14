@@ -45,7 +45,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         if(isset($data[($pos - 1)]) && $data[($pos - 1)] === ETF::SMALL_TUPLE_EXT) {
             return static::decodeSmall($etf, $data, $pos);
         }
@@ -55,12 +55,12 @@ class Tuple extends BaseObject implements \ArrayAccess {
     
     /**
      * Decodes the ETF bytes array (a small tuple) to an object.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return BaseObject
      */
-    static function decodeSmall(ETF $etf, string $data, int &$pos) {
+    static function decodeSmall(Decoder $etf, string $data, int &$pos) {
          $length = \ord($data[$pos]);
          
          $tuple = array();
@@ -71,15 +71,15 @@ class Tuple extends BaseObject implements \ArrayAccess {
          
          return (new static($tuple));
     }
-     
+    
     /**
      * Decodes the ETF bytes array (a large tuple) to an object.
-     * @param ETF     $etf
-     * @param string  $data
-     * @param int     $pos
+     * @param Decoder  $etf
+     * @param string   $data
+     * @param int      $pos
      * @return BaseObject
      */
-     static function decodeLarge(ETF $etf, string $data, int &$pos) {
+     static function decodeLarge(Decoder $etf, string $data, int &$pos) {
          $length = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos])[1];
          
          $tuple = array();
@@ -99,7 +99,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
         if($countEntries < 256) {
             $tuple = '';
             foreach($this->entries as $value) {
-                $tuple .= ETF::encodeAny($value);
+                $tuple .= Encoder::encodeAny($value);
             }
             
             $length = \chr($countEntries);
@@ -112,7 +112,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
         
         $tuple = '';
         foreach($this->entries as $value) {
-            $tuple .= ETF::encodeAny($value);
+            $tuple .= Encoder::encodeAny($value);
         }
         
         $length = \pack('N', $countEntries);

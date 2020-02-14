@@ -150,7 +150,7 @@ class NewFun extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $size = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos++])[1];
         $endSize = $pos - 4 + $size;
         
@@ -202,14 +202,14 @@ class NewFun extends BaseObject {
         $uniq = \hex2bin($this->uniq);
         $index = \pack('N', $this->index);
         
-        $module = ETF::encodeAny($this->module);
-        $oldIndex = ETF::encodeAny($this->oldIndex);
-        $oldUniq = ETF::encodeAny($this->oldUniq);
-        $pid = ETF::encodeAny($this->pid);
+        $module = Encoder::encodeAny($this->module);
+        $oldIndex = Encoder::encodeAny($this->oldIndex);
+        $oldUniq = Encoder::encodeAny($this->oldUniq);
+        $pid = Encoder::encodeAny($this->pid);
         
         $freeVars = '';
         foreach($this->freeVars as $var) {
-            $freeVars .= ETF::encodeAny($var);
+            $freeVars .= Encoder::encodeAny($var);
         }
         
         $numFree = \pack('N', $this->numFree);

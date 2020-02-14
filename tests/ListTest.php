@@ -11,27 +11,19 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\Atom;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use Obsidian\ETF\Tuple;
 use PHPUnit\Framework\TestCase;
 
 final class ListTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testList(): void {
         // [ 255, 256, 257, 258, 259, 260 ]
         $test = \base64_decode("g2wAAAAGYf9iAAABAGIAAAEBYgAAAQJiAAABA2IAAAEEag==");
         $expected = array(255, 256, 257, 258, 259, 260);
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertSame($expected, $decoded);
         $this->assertSame($test, $encoded);
@@ -42,8 +34,8 @@ final class ListTest extends TestCase {
         $test = \base64_decode("g2wAAAADYQBhMmHXdwNuaWw=");
         $expected = array(0, 50, 215, 'tail' => null);
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertSame($expected, $decoded);
         $this->assertSame($test, $encoded);
@@ -66,8 +58,8 @@ final class ListTest extends TestCase {
             null
         );
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);
@@ -84,8 +76,8 @@ final class ListTest extends TestCase {
             )))
         );
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);
@@ -101,8 +93,8 @@ final class ListTest extends TestCase {
             )
         )));
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);
@@ -112,8 +104,8 @@ final class ListTest extends TestCase {
         $expected = array(-1 => 2, 'tail' => 'test', 0 => 5);
         $expected2 = array(-1 => 2, 0 => 5, 'tail' => 'test');
         
-        $encoded = $this->etf->encode($expected);
-        $encoded2 = $this->etf->encode($expected2);
+        $encoded = (new Encoder())->encode($expected);
+        $encoded2 = (new Encoder())->encode($expected2);
         
         $this->assertNotSame($encoded[1], $encoded2[1]);
     }

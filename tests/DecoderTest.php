@@ -10,25 +10,16 @@
 
 namespace Obsidian\ETF\Tests;
 
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
 use Obsidian\ETF\Exception;
 use Obsidian\ETF\UnknownTagException;
 use PHPUnit\Framework\TestCase;
 
-final class ETFTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
+final class DecoderTest extends TestCase {
     function testETFVersion(): void {
         $this->expectException(Exception::class);
         
-        $this->etf->decode("\x00");
+        (new Decoder())->decode("\x00");
     }
     
     function testETFOutOfRange(): void {
@@ -38,7 +29,7 @@ final class ETFTest extends TestCase {
         $data = '';
         $pos = 0;
         
-        $this->etf->parseAny($input, $data, $pos);
+        (new Decoder())->parseAny($input, $data, $pos);
     }
     
     function testETFUnknownTag(): void {
@@ -48,6 +39,6 @@ final class ETFTest extends TestCase {
         $data = "\x00\x50\x25\x00";
         $pos = 0;
         
-        $this->etf->parseAny($input, $data, $pos);
+        (new Decoder())->parseAny($input, $data, $pos);
     }
 }

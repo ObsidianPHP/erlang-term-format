@@ -65,7 +65,7 @@ class NewerReference extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $length = \unpack('n', $data[$pos++].$data[$pos++])[1];
         
         $node = Atom::decodeIncrement($etf, $data, $pos);
@@ -83,7 +83,7 @@ class NewerReference extends BaseObject {
      * {@inheritdoc}
      */
     function encode(): string {
-        $node = ETF::encodeAny($this->node);
+        $node = Encoder::encodeAny($this->node);
         $creation = \pack('N', $this->creation);
         
         $id = '';

@@ -92,7 +92,7 @@ class Fun extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    static function decode(ETF $etf, string $data, int &$pos) {
+    static function decode(Decoder $etf, string $data, int &$pos) {
         $numFree = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos++])[1];
         
         $pid = $etf->parseAny($data[$pos], $data, $pos);
@@ -121,16 +121,16 @@ class Fun extends BaseObject {
     function encode(): string {
         $numFree = \pack('N', $this->numFree);
         
-        $pid = ETF::encodeAny($this->pid);
-        $module = ETF::encodeAny($this->module);
-        $index = ETF::encodeAny($this->index);
-        $uniq = ETF::encodeAny($this->uniq);
+        $pid = Encoder::encodeAny($this->pid);
+        $module = Encoder::encodeAny($this->module);
+        $index = Encoder::encodeAny($this->index);
+        $uniq = Encoder::encodeAny($this->uniq);
         
         $freeVars = '';
         
         if(\count($this->freeVars) > 0) {
             foreach($this->freeVars as $var) {
-                $freeVars .= ETF::encodeAny($var);
+                $freeVars .= Encoder::encodeAny($var);
             }
         }
         

@@ -11,26 +11,18 @@
 namespace Obsidian\ETF\Tests;
 
 use Obsidian\ETF\BitBinary;
-use Obsidian\ETF\ETF;
+use Obsidian\ETF\Decoder;
+use Obsidian\ETF\Encoder;
 use PHPUnit\Framework\TestCase;
 
 final class BitBinaryTest extends TestCase {
-    /** @var ETF */
-    protected $etf;
-    
-    function __construct($name = null, array $data = [], $dataName = '') {
-        $this->etf = new ETF();
-        
-        parent::__construct($name, $data, $dataName);
-    }
-    
     function testBitBinary(): void {
         // << 1 :: 7 >>
         $test = \base64_decode("g00AAAABBwI=");
         $expected = new BitBinary(7, array(1));
         
-        $decoded = $this->etf->decode($test);
-        $encoded = $this->etf->encode($expected);
+        $decoded = (new Decoder())->decode($test);
+        $encoded = (new Encoder())->encode($expected);
         
         $this->assertEquals($expected, $decoded);
         $this->assertSame($test, $encoded);
