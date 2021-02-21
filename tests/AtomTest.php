@@ -40,14 +40,14 @@ final class AtomTest extends TestCase {
         $decodedt = (new Decoder())->decode($testt);
         $encodedt = (new Encoder())->encode($expectedt);
         
-        $this->assertSame($expectedt, $decodedt);
-        $this->assertSame($testt, $encodedt);
+        self::assertSame($expectedt, $decodedt);
+        self::assertSame($testt, $encodedt);
         
         $bytest = \substr($testt, 1);
         $pos = 0;
         
         $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
-        $this->assertSame($expectedt, $testt2);
+        self::assertSame($expectedt, $testt2);
     }
     
     function testSmallUtf8AtomFalse(): void {
@@ -57,8 +57,8 @@ final class AtomTest extends TestCase {
         $decodedf = (new Decoder())->decode($testf);
         $encodedf = (new Encoder())->encode($expectedf);
         
-        $this->assertSame($expectedf, $decodedf);
-        $this->assertSame($testf, $encodedf);
+        self::assertSame($expectedf, $decodedf);
+        self::assertSame($testf, $encodedf);
     }
     
     function testSmallUtf8AtomNull(): void {
@@ -68,8 +68,8 @@ final class AtomTest extends TestCase {
         $decodedn = (new Decoder())->decode($testn);
         $encodedn = (new Encoder())->encode($expectedn);
         
-        $this->assertSame($expectedn, $decodedn);
-        $this->assertSame($testn, $encodedn);
+        self::assertSame($expectedn, $decodedn);
+        self::assertSame($testn, $encodedn);
     }
     
     function testUtf8Atom(): void {
@@ -79,8 +79,8 @@ final class AtomTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testUtf8AtomTrue(): void {
@@ -90,14 +90,14 @@ final class AtomTest extends TestCase {
         $decodedt = (new Decoder())->decode($testt);
         $encodedt = \chr(131).Atom::from($expectedt)->encodeBig();
         
-        $this->assertSame($expectedt, $decodedt);
-        $this->assertSame($testt, $encodedt);
+        self::assertSame($expectedt, $decodedt);
+        self::assertSame($testt, $encodedt);
         
         $bytest = \substr($testt, 1);
         $pos = 0;
         
         $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
-        $this->assertSame($expectedt, $testt2);
+        self::assertSame($expectedt, $testt2);
     }
     
     function testUtf8AtomFalse(): void {
@@ -107,8 +107,8 @@ final class AtomTest extends TestCase {
         $decodedf = (new Decoder())->decode($testf);
         $encodedf = \chr(131).Atom::from($expectedf)->encodeBig();
         
-        $this->assertSame($expectedf, $decodedf);
-        $this->assertSame($testf, $encodedf);
+        self::assertSame($expectedf, $decodedf);
+        self::assertSame($testf, $encodedf);
     }
     
     function testUtf8AtomNull(): void {
@@ -118,8 +118,8 @@ final class AtomTest extends TestCase {
         $decodedn = (new Decoder())->decode($testn);
         $encodedn = \chr(131).Atom::from($expectedn)->encodeBig();
         
-        $this->assertSame($expectedn, $decodedn);
-        $this->assertSame($testn, $encodedn);
+        self::assertSame($expectedn, $decodedn);
+        self::assertSame($testn, $encodedn);
     }
     
     function testSmallAtom(): void {
@@ -129,8 +129,8 @@ final class AtomTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = \chr(131).$expected->encodeSmallLatin();
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testSmallAtomTrue(): void {
@@ -140,14 +140,14 @@ final class AtomTest extends TestCase {
         $decodedt = (new Decoder())->decode($testt);
         $encodedt = \chr(131).Atom::from($expectedt)->encodeSmallLatin();
         
-        $this->assertSame($expectedt, $decodedt);
-        $this->assertSame($testt, $encodedt);
+        self::assertSame($expectedt, $decodedt);
+        self::assertSame($testt, $encodedt);
         
         $bytest = \substr($testt, 1);
         $pos = 0;
         
         $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
-        $this->assertSame($expectedt, $testt2);
+        self::assertSame($expectedt, $testt2);
     }
     
     function testSmallAtomFalse(): void {
@@ -157,8 +157,8 @@ final class AtomTest extends TestCase {
         $decodedf = (new Decoder())->decode($testf);
         $encodedf = \chr(131).Atom::from($expectedf)->encodeSmallLatin();
         
-        $this->assertSame($expectedf, $decodedf);
-        $this->assertSame($testf, $encodedf);
+        self::assertSame($expectedf, $decodedf);
+        self::assertSame($testf, $encodedf);
     }
     
     function testSmallAtomNull(): void {
@@ -168,8 +168,8 @@ final class AtomTest extends TestCase {
         $decodedn = (new Decoder())->decode($testn);
         $encodedn = \chr(131).Atom::from($expectedn)->encodeSmallLatin();
         
-        $this->assertSame($expectedn, $decodedn);
-        $this->assertSame($testn, $encodedn);
+        self::assertSame($expectedn, $decodedn);
+        self::assertSame($testn, $encodedn);
     }
     
     function testAtom(): void {
@@ -179,8 +179,8 @@ final class AtomTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = \chr(131).$expected->encodeLatin();
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testAtomTrue(): void {
@@ -190,14 +190,14 @@ final class AtomTest extends TestCase {
         $decodedt = (new Decoder())->decode($testt);
         $encodedt = \chr(131).Atom::from($expectedt)->encodeLatin();
         
-        $this->assertSame($expectedt, $decodedt);
-        $this->assertSame($testt, $encodedt);
+        self::assertSame($expectedt, $decodedt);
+        self::assertSame($testt, $encodedt);
         
         $bytest = \substr($testt, 1);
         $pos = 0;
         
         $testt2 = Atom::decodeIncrement((new Decoder()), $bytest, $pos);
-        $this->assertSame($expectedt, $testt2);
+        self::assertSame($expectedt, $testt2);
     }
     
     function testAtomFalse(): void {
@@ -207,8 +207,8 @@ final class AtomTest extends TestCase {
         $decodedf = (new Decoder())->decode($testf);
         $encodedf = \chr(131).Atom::from($expectedf)->encodeLatin();
         
-        $this->assertSame($expectedf, $decodedf);
-        $this->assertSame($testf, $encodedf);
+        self::assertSame($expectedf, $decodedf);
+        self::assertSame($testf, $encodedf);
     }
     
     function testAtomNull(): void {
@@ -218,15 +218,15 @@ final class AtomTest extends TestCase {
         $decodedn = (new Decoder())->decode($testn);
         $encodedn = \chr(131).Atom::from($expectedn)->encodeLatin();
         
-        $this->assertSame($expectedn, $decodedn);
-        $this->assertSame($testn, $encodedn);
+        self::assertSame($expectedn, $decodedn);
+        self::assertSame($testn, $encodedn);
     }
     
     function testToArray(): void {
         $a1 = new Atom('ok');
         $a2 = array('atom' => 'ok');
         
-        $this->assertSame($a2, $a1->toArray());
-        $this->assertEquals($a1, Atom::fromArray($a2));
+        self::assertSame($a2, $a1->toArray());
+        self::assertEquals($a1, Atom::fromArray($a2));
     }
 }

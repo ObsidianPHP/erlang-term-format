@@ -35,8 +35,8 @@ final class ReferenceTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($res);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testToArray(): void {
@@ -51,7 +51,7 @@ final class ReferenceTest extends TestCase {
             'creation' => 25
         );
         
-        $this->assertSame($i2, $i1->toArray());
-        $this->assertEquals($i1, Reference::fromArray($i2));
+        self::assertSame($i2, $i1->toArray());
+        self::assertEquals($i1, Reference::fromArray($i2));
     }
 }

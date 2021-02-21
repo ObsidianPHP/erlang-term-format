@@ -58,7 +58,7 @@ class Reference extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static(Atom::fromArray($data['node']), $data['id'], $data['creation']));
     }
     
@@ -84,8 +84,8 @@ class Reference extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
-        $node = Encoder::encodeAny($this->node);
+    function encode(Encoder $encoder): string {
+        $node = $encoder->encodeAny($this->node, false);
         
         $bid = \substr(\decbin($this->id), 0, 18);
         $id = \pack('N', \bindec($bid));

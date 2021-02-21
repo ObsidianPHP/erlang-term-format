@@ -58,7 +58,7 @@ class NewerReference extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static(Atom::fromArray($data['node']), $data['creation'], $data['id']));
     }
     
@@ -82,8 +82,8 @@ class NewerReference extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
-        $node = Encoder::encodeAny($this->node);
+    function encode(Encoder $encoder): string {
+        $node = $encoder->encodeAny($this->node, false);
         $creation = \pack('N', $this->creation);
         
         $id = '';

@@ -12,7 +12,7 @@ namespace Obsidian\ETF;
 /**
  * ETF Tuple.
  */
-class Tuple extends BaseObject implements \ArrayAccess {
+class Tuple extends BaseObject {
     /**
      * The tuple entries.
      * @var array
@@ -38,7 +38,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static($data));
     }
     
@@ -60,7 +60,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
      * @param int      $pos
      * @return BaseObject
      */
-    static function decodeSmall(Decoder $etf, string $data, int &$pos) {
+    static function decodeSmall(Decoder $etf, string $data, int &$pos): BaseObject {
          $length = \ord($data[$pos]);
          
          $tuple = array();
@@ -79,7 +79,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
      * @param int      $pos
      * @return BaseObject
      */
-     static function decodeLarge(Decoder $etf, string $data, int &$pos) {
+     static function decodeLarge(Decoder $etf, string $data, int &$pos): BaseObject {
          $length = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos])[1];
          
          $tuple = array();
@@ -93,13 +93,13 @@ class Tuple extends BaseObject implements \ArrayAccess {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
+    function encode(Encoder $encoder): string {
         $countEntries = \count($this->entries);
         
         if($countEntries < 256) {
             $tuple = '';
             foreach($this->entries as $value) {
-                $tuple .= Encoder::encodeAny($value);
+                $tuple .= $encoder->encodeAny($value, false);
             }
             
             $length = \chr($countEntries);
@@ -112,7 +112,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
         
         $tuple = '';
         foreach($this->entries as $value) {
-            $tuple .= Encoder::encodeAny($value);
+            $tuple .= $encoder->encodeAny($value, false);
         }
         
         $length = \pack('N', $countEntries);
@@ -125,11 +125,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
      * @internal
      */
     function offsetGet($offset) {
-        if(\array_key_exists($offset, $this->entries)) {
-            return $this->entries[$offset];
-        }
-        
-        return null;
+        return ($this->entries[$offset] ?? null);
     }
     
     /**
@@ -150,7 +146,7 @@ class Tuple extends BaseObject implements \ArrayAccess {
      * @return bool
      * @internal
      */
-    function offsetExists($offset) {
+    function offsetExists($offset): bool {
         return \array_key_exists($offset, $this->entries);
     }
     

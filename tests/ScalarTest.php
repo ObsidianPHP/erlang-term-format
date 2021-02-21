@@ -23,7 +23,7 @@ final class ScalarTest extends TestCase {
         $encoded = (new Encoder())->encode($test);
         $decoded = (new Decoder())->decode($encoded);
         
-        $this->assertEquals($expected, $decoded);
+        self::assertEquals($expected, $decoded);
     }
     
     function testSmallInteger(): void {
@@ -34,8 +34,8 @@ final class ScalarTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testInteger(): void {
@@ -46,8 +46,8 @@ final class ScalarTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testIntegerLarger(): void {
@@ -58,8 +58,8 @@ final class ScalarTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testSmallBig(): void {
@@ -70,8 +70,8 @@ final class ScalarTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testLargeBig(): void {
@@ -81,9 +81,9 @@ final class ScalarTest extends TestCase {
         
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
-                
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testString(): void {
@@ -94,8 +94,8 @@ final class ScalarTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testFloatString(): void {
@@ -104,7 +104,7 @@ final class ScalarTest extends TestCase {
         $expected = 5.5;
         
         $decoded = (new Decoder())->decode($test);
-        $this->assertSame($expected, $decoded);
+        self::assertSame($expected, $decoded);
     }
     
     function testNewFloat(): void {
@@ -115,26 +115,57 @@ final class ScalarTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
-    function testNegativeInteger() {
+    function testNegativeInteger(): void {
         $expected = -250539;
         
         $encoded = (new Encoder())->encode($expected);
         $decoded = (new Decoder())->decode($encoded);
         
-        $this->assertSame($expected, $decoded);
+        self::assertSame($expected, $decoded);
     }
     
-    function testNegativeSmallBigInteger() {
+    function testNegativeSmallBigInteger(): void {
         $expected = -200317799350927360;
         $test = (string) $expected;
         
         $encoded = (new Encoder())->encode($test);
         $decoded = (new Decoder())->decode($encoded);
         
-        $this->assertSame($expected, $decoded);
+        self::assertSame($expected, $decoded);
+    }
+    
+    function testEncodeNumericStringAlwaysAsBinary(): void {
+        $expected = 200317799350927360;
+        $test = (string) $expected;
+        
+        $encoded = (new Encoder(Encoder::ENCODE_STRINGS_AS_BINARY))->encode($test);
+        $decoded = (new Decoder())->decode($encoded);
+        
+        self::assertIsString($decoded);
+        self::assertSame($expected, ((int) $decoded));
+    }
+    
+    function testEncodeNumericDirectStringAsBinary(): void {
+        $expected = 200317799350927360;
+        $test = (string) $expected;
+        
+        $encoded = (new Encoder(Encoder::ENCODE_DIRECT_STRINGS_AS_BINARY))->encode($test);
+        $decoded = (new Decoder())->decode($encoded);
+        
+        self::assertIsString($decoded);
+        self::assertSame($expected, ((int) $decoded));
+        
+        $expected2 = array(200317799350927360);
+        $test2 = array('200317799350927360');
+        
+        $encoded2 = (new Encoder(Encoder::ENCODE_DIRECT_STRINGS_AS_BINARY))->encode($test2);
+        $decoded2 = (new Decoder())->decode($encoded2);
+        
+        self::assertIsArray($decoded2);
+        self::assertSame($expected2, $decoded2);
     }
 }

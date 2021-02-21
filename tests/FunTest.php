@@ -32,7 +32,7 @@ final class FunTest extends TestCase {
         $test = (new Encoder())->encode($expected);
         $decoded = (new Decoder())->decode($test);
         
-        $this->assertEquals($expected, $decoded);
+        self::assertEquals($expected, $decoded);
     }
     
     function testToArray(): void {
@@ -58,7 +58,7 @@ final class FunTest extends TestCase {
             'freeVars' => array()
         );
         
-        $this->assertSame($d2, $d1->toArray());
-        $this->assertEquals($d1, Fun::fromArray($d2));
+        self::assertSame($d2, $d1->toArray());
+        self::assertEquals($d1, Fun::fromArray($d2));
     }
 }

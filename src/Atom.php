@@ -45,7 +45,7 @@ class Atom extends BaseObject {
      * Returns the atom.
      * @return string
      */
-    function __toString() {
+    function __toString(): string {
         return $this->atom;
     }
     
@@ -53,7 +53,7 @@ class Atom extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static($data['atom']));
     }
     
@@ -83,16 +83,12 @@ class Atom extends BaseObject {
         switch($data) {
             case 'true': // @codeCoverageIgnore
                 return true;
-            break;
             case 'false': // @codeCoverageIgnore
                 return false;
-            break;
             case 'nil': // @codeCoverageIgnore
                 return null;
-            break;
             default: // @codeCoverageIgnore
                 return (new static($data));
-            break;
         }
     }
     
@@ -101,7 +97,7 @@ class Atom extends BaseObject {
      * @return self|bool|null
      */
     static function decode(Decoder $etf, string $data, int &$pos) {
-        $tag = (isset($data[($pos - 1)]) ? $data[($pos - 1)] : null);
+        $tag = ($data[($pos - 1)] ?? null);
         
         switch($tag) {
             case ETF::ATOM_UTF8_EXT:
@@ -118,7 +114,6 @@ class Atom extends BaseObject {
             break;
             default:
                 throw new UnknownTagException('Invalid atom tag "'.$tag.'"');
-            break;
         }
         
         return $atom;
@@ -216,7 +211,7 @@ class Atom extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
+    function encode(Encoder $encoder): string {
         if(\strlen($this->atom) > 255) {
             return $this->encodeAtomUtf8($this->atom);
         }
@@ -252,7 +247,7 @@ class Atom extends BaseObject {
      * @param string  $data
      * @return string
      */
-    protected function encodeAtomUtf8(string $data) {
+    protected function encodeAtomUtf8(string $data): string {
         return ETF::ATOM_UTF8_EXT.\pack('n', \strlen($data)).$data;
     }
     
@@ -260,7 +255,7 @@ class Atom extends BaseObject {
      * @param string  $data
      * @return string
      */
-    protected function encodeSmallAtomUtf8(string $data) {
+    protected function encodeSmallAtomUtf8(string $data): string {
         return ETF::SMALL_ATOM_UTF8_EXT.\pack('C', \strlen($data)).$data;
     }
     
@@ -268,7 +263,7 @@ class Atom extends BaseObject {
      * @param string  $data
      * @return string
      */
-    protected function encodeAtom(string $data) {
+    protected function encodeAtom(string $data): string {
         return ETF::ATOM_EXT.\pack('n', \strlen($data)).$data;
     }
     
@@ -276,7 +271,7 @@ class Atom extends BaseObject {
      * @param string  $data
      * @return string
      */
-    protected function encodeSmallAtom(string $data) {
+    protected function encodeSmallAtom(string $data): string {
         return ETF::SMALL_ATOM_EXT.\pack('C', \strlen($data)).$data;
     }
 }

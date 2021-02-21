@@ -16,12 +16,12 @@ class Decoder {
     /**
      * @var \GMP
      */
-    protected static $gmpTop = null;
+    protected static $gmpTop;
     
     /**
      * @var \GMP
      */
-    protected static $gmpBottom = null;
+    protected static $gmpBottom;
     
     /**
      * Constructor.
@@ -74,92 +74,63 @@ class Decoder {
         switch($input) {
             case ETF::SMALL_INTEGER_EXT:
                 return $this->parseSmallInt($data, $pos);
-            break;
             case ETF::INTEGER_EXT:
                 return $this->parseInt($data, $pos);
-            break;
             case ETF::FLOAT_EXT:
                 return $this->parseFloat($data, $pos);
-            break;
             case ETF::REFERENCE_EXT:
                 return Reference::decode($this, $data, $pos);
-            break;
             case ETF::PORT_EXT:
                 return Port::decode($this, $data, $pos);
-            break;
             case ETF::NEW_PORT_EXT:
                 return NewPort::decode($this, $data, $pos);
-            break;
             case ETF::PID_EXT:
                 return PID::decode($this, $data, $pos);
-            break;
             case ETF::NEW_PID_EXT:
                 return NewPID::decode($this, $data, $pos);
-            break;
             case ETF::SMALL_TUPLE_EXT:
                 return Tuple::decodeSmall($this, $data, $pos);
-            break;
             case ETF::LARGE_TUPLE_EXT:
                 return Tuple::decodeLarge($this, $data, $pos);
-            break;
             case ETF::MAP_EXT:
                 return $this->parseMap($data, $pos);
-            break;
             case ETF::NIL_EXT:
                 $pos--;
                 return array();
-            break;
             case ETF::STRING_EXT:
                 return $this->parseString($data, $pos);
-            break;
             case ETF::LIST_EXT:
                 return $this->parseList($data, $pos);
-            break;
             case ETF::BINARY_EXT:
                 return $this->parseBinary($data, $pos);
-            break;
             case ETF::SMALL_BIG_EXT:
                 return $this->parseSmallBig($data, $pos);
-            break;
             case ETF::LARGE_BIG_EXT:
                 return $this->parseLargeBig($data, $pos);
-            break;
             case ETF::NEW_REFERENCE_EXT:
                 return NewReference::decode($this, $data, $pos);
-            break;
             case ETF::NEWER_REFERENCE_EXT:
                 return NewerReference::decode($this, $data, $pos);
-            break;
             case ETF::FUN_EXT;
                 return Fun::decode($this, $data, $pos);
-            break;
             case ETF::NEW_FUN_EXT:
                 return NewFun::decode($this, $data, $pos);
-            break;
             case ETF::EXPORT_EXT:
                 return Export::decode($this, $data, $pos);
-            break;
             case ETF::BIT_BINARY_EXT:
                 return BitBinary::decode($this, $data, $pos);
-            break;
             case ETF::NEW_FLOAT_EXT;
                 return $this->parseNewFloat($data, $pos);
-            break;
             case ETF::ATOM_UTF8_EXT:
                 return Atom::decodeAtomUtf8($this, $data, $pos);
-            break;
             case ETF::SMALL_ATOM_UTF8_EXT:
                 return Atom::decodeSmallAtomUtf8($this, $data, $pos);
-            break;
             case ETF::ATOM_EXT:
                 return Atom::decodeAtom($this, $data, $pos);
-            break;
             case ETF::SMALL_ATOM_EXT:
                 return Atom::decodeSmallAtom($this, $data, $pos);
-            break;
             default:
                 throw new UnknownTagException('Unknown tag "'.$input.'" ('.\bindec($input).')');
-            break;
         }
     }
     
@@ -168,7 +139,7 @@ class Decoder {
      * @param int     $pos
      * @return int
      */
-    protected function parseSmallInt(string $data, int &$pos) {
+    protected function parseSmallInt(string $data, int $pos): int {
         return \ord($data[$pos]);
     }
     
@@ -177,7 +148,7 @@ class Decoder {
      * @param int     $pos
      * @return int
      */
-    protected function parseInt(string $data, int &$pos) {
+    protected function parseInt(string $data, int &$pos): int {
         $value = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos])[1];
         
         if($value & 0x80000000) {
@@ -192,7 +163,7 @@ class Decoder {
      * @param int     $pos
      * @return float
      */
-    protected function parseFloat(string $data, int &$pos) {
+    protected function parseFloat(string $data, int &$pos): float {
         $pos--;
         
         $float = '';
@@ -200,6 +171,7 @@ class Decoder {
             $float .= $data[++$pos];
         }
         
+        /** @noinspection PrintfScanfArgumentsInspection */
         return \sscanf($float, '%20e')[0];
     }
     
@@ -208,7 +180,7 @@ class Decoder {
      * @param int     $pos
      * @return array
      */
-    protected function parseMap(string $data, int &$pos) {
+    protected function parseMap(string $data, int &$pos): array {
         $length = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos])[1];
         
         $map = array();
@@ -219,6 +191,7 @@ class Decoder {
             if($key instanceof Atom) {
                 $key = ':'.((string) $key);
             } else {
+                /** @noinspection NestedTernaryOperatorInspection */
                 $key = ((string) ($key === null ? ':nil' : ($key === true ? ':true' : ($key === false ? ':false' : $key))));
             }
             
@@ -234,7 +207,7 @@ class Decoder {
      * @param int     $pos
      * @return int[]
      */
-    protected function parseString(string $data, int &$pos) {
+    protected function parseString(string $data, int &$pos): array {
         $length = \unpack('n', $data[$pos++].$data[$pos])[1];
         
         $str = array();
@@ -250,7 +223,7 @@ class Decoder {
      * @param int     $pos
      * @return array
      */
-    protected function parseList(string $data, int &$pos) {
+    protected function parseList(string $data, int &$pos): array {
         $length = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos])[1];
         
         $list = array();
@@ -280,7 +253,7 @@ class Decoder {
      * @param int     $pos
      * @return string
      */
-    protected function parseBinary(string $data, int &$pos) {
+    protected function parseBinary(string $data, int &$pos): string {
         $length = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos])[1];
         
         $binary = '';
@@ -350,7 +323,7 @@ class Decoder {
      * @param int     $pos
      * @return float
      */
-    protected function parseNewFloat(string $data, int &$pos) {
+    protected function parseNewFloat(string $data, int &$pos): float {
         return \unpack('E', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos++].
                               $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos])[1];
     }

@@ -25,8 +25,8 @@ final class ListTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testListImproper(): void {
@@ -37,8 +37,8 @@ final class ListTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testListMix(): void {
@@ -61,8 +61,8 @@ final class ListTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testListTuple(): void {
@@ -79,8 +79,8 @@ final class ListTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testListBinary(): void {
@@ -96,17 +96,17 @@ final class ListTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
-    function testListAndMapWithTail() {
+    function testListAndMapWithTail(): void {
         $expected = array(-1 => 2, 'tail' => 'test', 0 => 5);
         $expected2 = array(-1 => 2, 0 => 5, 'tail' => 'test');
         
         $encoded = (new Encoder())->encode($expected);
         $encoded2 = (new Encoder())->encode($expected2);
         
-        $this->assertNotSame($encoded[1], $encoded2[1]);
+        self::assertNotSame($encoded[1], $encoded2[1]);
     }
 }

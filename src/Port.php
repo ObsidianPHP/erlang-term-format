@@ -58,7 +58,7 @@ class Port extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static(Atom::fromArray($data['node']), $data['id'], $data['creation']));
     }
     
@@ -79,8 +79,8 @@ class Port extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
-        $node = Encoder::encodeAny($this->node);
+    function encode(Encoder $encoder): string {
+        $node = $encoder->encodeAny($this->node, false);
         $id = \pack('N', $this->id);
         
         return ETF::PORT_EXT.$node.$id.\chr($this->creation);

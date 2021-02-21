@@ -132,7 +132,7 @@ class NewFun extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static(
             $data['size'],
             $data['arity'],
@@ -196,20 +196,20 @@ class NewFun extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
+    function encode(Encoder $encoder): string {
         $arity = \chr($this->arity);
         
         $uniq = \hex2bin($this->uniq);
         $index = \pack('N', $this->index);
         
-        $module = Encoder::encodeAny($this->module);
-        $oldIndex = Encoder::encodeAny($this->oldIndex);
-        $oldUniq = Encoder::encodeAny($this->oldUniq);
-        $pid = Encoder::encodeAny($this->pid);
+        $module = $encoder->encodeAny($this->module, false);
+        $oldIndex = $encoder->encodeAny($this->oldIndex, false);
+        $oldUniq = $encoder->encodeAny($this->oldUniq, false);
+        $pid = $encoder->encodeAny($this->pid, false);
         
         $freeVars = '';
         foreach($this->freeVars as $var) {
-            $freeVars .= Encoder::encodeAny($var);
+            $freeVars .= $encoder->encodeAny($var, false);
         }
         
         $numFree = \pack('N', $this->numFree);

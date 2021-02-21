@@ -49,7 +49,7 @@ class BitBinary extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static($data['bits'], $data['bytes']));
     }
     
@@ -79,7 +79,7 @@ class BitBinary extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
+    function encode(Encoder $encoder): string {
         $bits = $this->bytes;
         $bit = \array_pop($bits);
         

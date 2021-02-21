@@ -25,15 +25,15 @@ final class ExportTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testToArray(): void {
         $c1 = new Export((new Atom('Elixir.Process')), (new Atom('send')), 2);
         $c2 = array('module' => array('atom' => 'Elixir.Process'), 'function' => array('atom' => 'send'), 'arity' => 2);
         
-        $this->assertSame($c2, $c1->toArray());
-        $this->assertEquals($c1, Export::fromArray($c2));
+        self::assertSame($c2, $c1->toArray());
+        self::assertEquals($c1, Export::fromArray($c2));
     }
 }

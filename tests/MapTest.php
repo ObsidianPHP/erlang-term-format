@@ -25,7 +25,7 @@ final class MapTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertSame($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertSame($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
 }

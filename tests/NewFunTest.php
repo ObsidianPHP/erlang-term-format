@@ -73,8 +73,8 @@ final class NewFunTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testToArray(): void {
@@ -108,7 +108,7 @@ final class NewFunTest extends TestCase {
             'freeVars' => array()
         );
         
-        $this->assertSame($e2, $e1->toArray());
-        $this->assertEquals($e1, NewFun::fromArray($e2));
+        self::assertSame($e2, $e1->toArray());
+        self::assertEquals($e1, NewFun::fromArray($e2));
     }
 }

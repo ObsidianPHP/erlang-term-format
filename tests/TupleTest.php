@@ -20,22 +20,22 @@ final class TupleTest extends TestCase {
     function testTupleAccess(): void {
         $tuple = new Tuple(array(0, 5, 2, 'hi'));
         
-        $this->assertSame(0, $tuple[0]);
+        self::assertSame(0, $tuple[0]);
         
         $tuple[] = 'hello_world';
-        $this->assertSame('hello_world', $tuple[4]);
+        self::assertSame('hello_world', $tuple[4]);
         
-        $this->assertFalse(isset($tuple['hi']));
+        self::assertFalse(isset($tuple['hi']));
         
-        $this->assertFalse(isset($tuple['hi']));
+        self::assertFalse(isset($tuple['hi']));
         
         $tuple['hi'] = true;
-        $this->assertSame(true, $tuple['hi']);
+        self::assertTrue($tuple['hi']);
         
-        $this->assertTrue(isset($tuple['hi']));
+        self::assertTrue(isset($tuple['hi']));
         
         unset($tuple['hi']);
-        $this->assertSame(null, $tuple['hi']);
+        self::assertNull($tuple['hi']);
     }
     
     function testTuple(): void {
@@ -49,8 +49,8 @@ final class TupleTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testTupleSmall(): void {
@@ -61,12 +61,12 @@ final class TupleTest extends TestCase {
         
         $tuple = new Tuple($array);
         
-        $encoded = $tuple->encode();
+        $encoded = $tuple->encode((new Encoder()));
         
         $pos = 1;
         $decoded = Tuple::decode((new Decoder()), $encoded, $pos);
         
-        $this->assertEquals($tuple, $decoded);
+        self::assertEquals($tuple, $decoded);
     }
     
     function testLargeTuple(): void {
@@ -80,12 +80,12 @@ final class TupleTest extends TestCase {
         $expected = new Tuple($array);
         
         $decoded = (new Decoder())->decode($test);
-        $this->assertEquals($expected, $decoded);
+        self::assertEquals($expected, $decoded);
         
         $pos = 2;
         $decoded2 = Tuple::decode((new Decoder()), $test, $pos);
         
-        $this->assertEquals($expected, $decoded2);
+        self::assertEquals($expected, $decoded2);
     }
     
     function testToArray(): void {
@@ -94,7 +94,7 @@ final class TupleTest extends TestCase {
         ));
         $j2 = array('hehehe');
         
-        $this->assertSame($j2, $j1->toArray());
-        $this->assertEquals($j1, Tuple::fromArray($j2));
+        self::assertSame($j2, $j1->toArray());
+        self::assertEquals($j1, Tuple::fromArray($j2));
     }
 }

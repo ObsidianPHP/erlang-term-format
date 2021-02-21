@@ -18,13 +18,13 @@ abstract class BaseObject implements \ArrayAccess {
      * @return array
      */
     abstract function toArray(): array;
-    
+
     /**
      * Converts array to an object.
      * @param array  $data
      * @return static
      */
-    abstract static function fromArray($data): self;
+    abstract static function fromArray(array $data): self;
     
     /**
      * Decodes the ETF bytes array to an object.
@@ -34,13 +34,14 @@ abstract class BaseObject implements \ArrayAccess {
      * @return static
      */
     abstract static function decode(Decoder $etf, string $data, int &$pos);
-    
+
     /**
      * Encodes the object to ETF bytes array.
+     * @param Encoder $encoder
      * @return string
      * @throws Exception
      */
-    abstract function encode(): string;
+    abstract function encode(Encoder $encoder): string;
 
     /**
      * @codeCoverageIgnore
@@ -77,7 +78,7 @@ abstract class BaseObject implements \ArrayAccess {
      * @return bool
      * @internal
      */
-    function offsetExists($offset) {
+    function offsetExists($offset): bool {
         return \property_exists($this, $offset);
     }
     

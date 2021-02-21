@@ -14,24 +14,51 @@ namespace Obsidian\ETF;
  */
 class Encoder {
     /**
+     * Numeric strings are encoded as numbers.
+     * @source
+     */
+    const ENCODE_NUMERIC_STRING_AS_NUMBER = 0x1;
+
+    /**
+     * Encodes only directly given strings as binary.
+     * Numeric strings in sub-elements are encoded as number.
+     * @source
+     */
+    const ENCODE_DIRECT_STRINGS_AS_BINARY = 0x3;
+
+    /**
+     * Encodes all strings always as binary.
+     * @source
+     */
+    const ENCODE_STRINGS_AS_BINARY = 0x9;
+
+    /**
      * @var \GMP
      */
-    protected static $gmpTop = null;
+    protected static $gmpTop;
     
     /**
      * @var \GMP
      */
-    protected static $gmpBottom = null;
+    protected static $gmpBottom;
+
+    /**
+     * @var int
+     */
+    protected $encodeStrings;
     
     /**
      * Constructor.
+     * @param int  $encodeStrings  Controls how strings are handled. By default, numeric strings get encoded as numbers.
      * @codeCoverageIgnore
      */
-    function __construct() {
+    function __construct(int $encodeStrings = self::ENCODE_NUMERIC_STRING_AS_NUMBER) {
         if(static::$gmpTop === null) {
             static::$gmpTop = \gmp_init(((string) \PHP_INT_MAX));
             static::$gmpBottom = \gmp_init(((string) \PHP_INT_MIN));
         }
+
+        $this->encodeStrings = $encodeStrings;
     }
     
     /**
@@ -40,103 +67,103 @@ class Encoder {
      * @return string
      * @throws Exception
      */
-    function encode($data) {
-        return ETF::ETF_VERSION.static::encodeAny($data);
+    function encode($data): string {
+        return ETF::ETF_VERSION.$this->encodeAny($data, true);
     }
-    
+
     /**
-     * @param mixed  $input
+     * @param mixed $input
+     * @param bool $external
      * @return string
      * @internal
      */
-    static function encodeAny($input) {
+    function encodeAny($input, bool $external): string {
         $type = \gettype($input);
         
         switch($type) {
             case 'boolean': // @codeCoverageIgnore
             case 'NULL': // @codeCoverageIgnore
-                return Atom::from($input)->encode();
-            break;
+                return Atom::from($input)->encode($this);
             case 'integer': // @codeCoverageIgnore
-                if($input <= 255 && $input >= 0) {
-                    return static::encodeSmallInt($input);
-                } elseif(-2147483648 <= $input && $input <= 2147483647) {
-                    return static::encodeInt($input);
-                } else {
-                    $gmp = \gmp_init(((string) $input));
-                    
-                    if(\gmp_cmp($gmp, static::$gmpTop) <= 0 && \gmp_cmp($gmp, static::$gmpBottom) >= 0) {
-                        return static::encodeSmallBig($gmp);
-                    }
-                    
-                    throw new Exception('Large bignums must be passed as string'); // @codeCoverageIgnore
+                if ($input <= 255 && $input >= 0) {
+                    return $this->encodeSmallInt($input);
                 }
-            break;
+
+                if(-2147483648 <= $input && $input <= 2147483647) {
+                    return $this->encodeInt($input);
+                }
+
+                $gmp = \gmp_init(((string) $input));
+
+                if(\gmp_cmp($gmp, static::$gmpTop) <= 0 && \gmp_cmp($gmp, static::$gmpBottom) >= 0) {
+                    return $this->encodeSmallBig($gmp);
+                }
+
+                throw new Exception('Large bignums must be passed as string'); // @codeCoverageIgnore
             case 'double': // @codeCoverageIgnore
             case 'float': // @codeCoverageIgnore
-                return static::encodeNewFloat($input);
-            break;
+                return $this->encodeNewFloat($input);
             case 'string': // @codeCoverageIgnore
-                if(\is_numeric($input) && \preg_match('/[^0-9\-]/su', $input) === 0) {
+                if(
+                    (
+                        $this->encodeStrings === self::ENCODE_NUMERIC_STRING_AS_NUMBER ||
+                        (!$external && $this->encodeStrings === self::ENCODE_DIRECT_STRINGS_AS_BINARY)
+                    ) && \is_numeric($input) && \preg_match('/[^0-9\-]/u', $input) === 0
+                ) {
                     $gmp = @\gmp_init($input);
                     
                     if($gmp instanceof \GMP) {
                         if(\gmp_cmp($gmp, static::$gmpTop) <= 0 && \gmp_cmp($gmp, static::$gmpBottom) >= 0) {
-                            return static::encodeSmallBig($gmp);
+                            return $this->encodeSmallBig($gmp);
                         }
                         
-                        return static::encodeLargeBig($gmp);
+                        return $this->encodeLargeBig($gmp);
                     }
                 }
                 
-                return static::encodeBinary($input);
-            break;
+                return $this->encodeBinary($input);
             case 'object': // @codeCoverageIgnore
                 if($input instanceof BaseObject) {
-                    return $input->encode();
+                    return $input->encode($this);
                 }
                 
-                return static::encodeAny(((array) $input));
-            break;
+                return $this->encodeAny(((array) $input), false);
             case 'array': // @codeCoverageIgnore
                 if(\count($input) === 0) {
                     return ETF::NIL_EXT;
-                } else {
-                    $keysNumeric = true;
-                    $smallInts = null;
-                    
-                    \end($input);
-                    $lastKey = \key($input);
-                    \reset($input);
-                    
-                    foreach($input as $key => $val) {
-                        $smallInts = ($smallInts !== false && \is_integer($val) && $val >= 0 && $val <= 255);
-                        
-                        if(!\is_integer($key) && ($key !== 'tail' || $lastKey !== 'tail')) {
-                            $keysNumeric = false;
-                            break;
-                        }
-                    }
-                    
-                    if($keysNumeric) {
-                        if($smallInts && \count($input) <= 65535) {
-                            return static::encodeString($input);
-                        }
-                        
-                        return static::encodeList($input);
-                    }
-                    
-                    return static::encodeMap($input);
                 }
-            break;
+
+                $keysNumeric = true;
+                $smallInts = null;
+
+                \end($input);
+                $lastKey = \key($input);
+                \reset($input);
+
+                foreach($input as $key => $val) {
+                    $smallInts = ($smallInts !== false && \is_int($val) && $val >= 0 && $val <= 255);
+
+                    if(!\is_int($key) && ($key !== 'tail' || $lastKey !== 'tail')) {
+                        $keysNumeric = false;
+                        break;
+                    }
+                }
+
+                if($keysNumeric) {
+                    if($smallInts && \count($input) <= 65535) {
+                        return $this->encodeString($input);
+                    }
+
+                    return $this->encodeList($input);
+                }
+
+                return $this->encodeMap($input);
             case 'resource': // @codeCoverageIgnore
             case 'resource (closed)': // @codeCoverageIgnore
                 $data = Reference::fromArray(array('node' => array('atom' => \get_resource_type($input)), 'id' => ((int) $input), 'creation' => 0));
-                return $data->encode();
-            break;
+                return $data->encode($this);
             default: // @codeCoverageIgnore
                 throw new Exception('Can not encode type "'.$type.'"'); // @codeCoverageIgnore
-            break;
         }
     }
     
@@ -144,7 +171,7 @@ class Encoder {
      * @param mixed  $data
      * @return string
      */
-    protected static function encodeSmallInt($data) {
+    protected function encodeSmallInt($data): string {
         return ETF::SMALL_INTEGER_EXT.\chr($data);
     }
     
@@ -152,7 +179,7 @@ class Encoder {
      * @param mixed  $data
      * @return string
      */
-    protected static function encodeInt($data) {
+    protected function encodeInt($data): string {
         return ETF::INTEGER_EXT.\pack('N', $data);
     }
     
@@ -160,16 +187,16 @@ class Encoder {
      * @param mixed  $data
      * @return string
      */
-    protected static function encodeMap($data) {
+    protected function encodeMap($data): string {
         $map = '';
         foreach($data as $key => $value) {
             if($key[0] === ':') {
-                $map .= Atom::fromArray(array('atom' => \mb_substr($key, 1)))->encode();
+                $map .= Atom::fromArray(array('atom' => \mb_substr($key, 1)))->encode($this);
             } else {
-                $map .= static::encodeAny($key);
+                $map .= $this->encodeAny($key, false);
             }
             
-            $map .= static::encodeAny($value);
+            $map .= $this->encodeAny($value, false);
         }
         
         $length = \pack('N', ((int) \ceil(\count($data))));
@@ -181,7 +208,7 @@ class Encoder {
      * @return string
      * @internal
      */
-    protected static function encodeString(array $data) {
+    protected function encodeString(array $data): string {
         $binlen = \pack('n', \count($data));
         return ETF::STRING_EXT.$binlen.\pack('C*', ...$data);
         
@@ -191,7 +218,7 @@ class Encoder {
      * @param array  $data
      * @return string
      */
-    protected static function encodeList(array $data) {
+    protected function encodeList(array $data): string {
         $size = \count($data);
         
         $list = '';
@@ -200,21 +227,21 @@ class Encoder {
         foreach($data as $key => $value) {
             if($key === 'tail') {
                 $size--;
-                $tail = static::encodeAny($value);
+                $tail = $this->encodeAny($value, false);
             } else {
-                $list .= static::encodeAny($value);
+                $list .= $this->encodeAny($value, false);
             }
         }
         
         $length = \pack('N', $size);
-        return ETF::LIST_EXT.$length.$list.($tail !== null ? $tail : ETF::NIL_EXT);
+        return ETF::LIST_EXT.$length.$list.($tail ?? ETF::NIL_EXT);
     }
     
     /**
      * @param string  $data
      * @return string
      */
-    protected static function encodeBinary(string $data) {
+    protected function encodeBinary(string $data): string {
         return ETF::BINARY_EXT.\pack('N', \strlen($data)).$data;
     }
     
@@ -222,9 +249,9 @@ class Encoder {
      * @param \GMP  $data
      * @return string
      */
-    protected static function encodeSmallBig(\GMP $data) {
+    protected function encodeSmallBig(\GMP $data): string {
         $sign = (\gmp_cmp($data, '0') >= 0 ? 0 : 1);
-        $ints = static::encodeBig($data, $sign);
+        $ints = $this->encodeBig($data, $sign);
         
         return ETF::SMALL_BIG_EXT.\chr(\strlen($ints)).\chr($sign).$ints;
     }
@@ -233,11 +260,11 @@ class Encoder {
      * @param \GMP  $data
      * @return string
      */
-    protected static function encodeLargeBig(\GMP $data) {
+    protected function encodeLargeBig(\GMP $data): string {
         $sign = (\gmp_cmp($data, '0') >= 0 ? 0 : 1);
         
         $data = \gmp_abs($data);
-        $ints = static::encodeBig($data, $sign);
+        $ints = $this->encodeBig($data, $sign);
         
         return ETF::LARGE_BIG_EXT.\pack('N', \strlen($ints)).\chr($sign).$ints;
     }
@@ -247,7 +274,7 @@ class Encoder {
      * @param int   $sign
      * @return string
      */
-    protected static function encodeBig(\GMP $data, int $sign) {
+    protected function encodeBig(\GMP $data, int $sign): string {
         $data = ($sign === 0 ? $data : \gmp_mul($data, '-1'));
         
         $bytes = '';
@@ -263,7 +290,7 @@ class Encoder {
      * @param float  $data
      * @return string
      */
-    protected static function encodeNewFloat(float $data) {
+    protected function encodeNewFloat(float $data): string {
         return ETF::NEW_FLOAT_EXT.\pack('E', $data);
     }
 }

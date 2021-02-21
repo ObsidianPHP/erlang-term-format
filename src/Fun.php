@@ -58,7 +58,7 @@ class Fun extends BaseObject {
      * @param int        $uniq
      * @param array      $freeVars
      */
-    function __construct(int $numFree, $pid, $module, int $index, int $uniq, array $freeVars) {
+    function __construct(int $numFree, PID $pid, $module, int $index, int $uniq, array $freeVars) {
         $this->numFree = $numFree;
         $this->pid = $pid;
         $this->module = $module;
@@ -85,7 +85,7 @@ class Fun extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static($data['numFree'], PID::fromArray($data['pid']), Atom::fromArray($data['module']), $data['index'], $data['uniq'], $data['freeVars']));
     }
     
@@ -118,19 +118,19 @@ class Fun extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
+    function encode(Encoder $encoder): string {
         $numFree = \pack('N', $this->numFree);
         
-        $pid = Encoder::encodeAny($this->pid);
-        $module = Encoder::encodeAny($this->module);
-        $index = Encoder::encodeAny($this->index);
-        $uniq = Encoder::encodeAny($this->uniq);
+        $pid = $encoder->encodeAny($this->pid, false);
+        $module = $encoder->encodeAny($this->module, false);
+        $index = $encoder->encodeAny($this->index, false);
+        $uniq = $encoder->encodeAny($this->uniq, false);
         
         $freeVars = '';
         
         if(\count($this->freeVars) > 0) {
             foreach($this->freeVars as $var) {
-                $freeVars .= Encoder::encodeAny($var);
+                $freeVars .= $encoder->encodeAny($var, false);
             }
         }
         

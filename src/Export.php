@@ -58,7 +58,7 @@ class Export extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static(Atom::fromArray($data['module']), Atom::fromArray($data['function']), $data['arity']));
     }
     
@@ -80,10 +80,10 @@ class Export extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
-        $module = Encoder::encodeAny($this->module);
-        $function = Encoder::encodeAny($this->function);
-        $arity = Encoder::encodeAny($this->arity);
+    function encode(Encoder $encoder): string {
+        $module = $encoder->encodeAny($this->module, false);
+        $function = $encoder->encodeAny($this->function, false);
+        $arity = $encoder->encodeAny($this->arity, false);
         
         return ETF::EXPORT_EXT.$module.$function.$arity;
     }

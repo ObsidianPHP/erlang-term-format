@@ -67,7 +67,7 @@ class PID extends BaseObject {
      * {@inheritdoc}
      * @return self
      */
-    static function fromArray($data): BaseObject {
+    static function fromArray(array $data): BaseObject {
         return (new static(Atom::fromArray($data['node']), $data['id'], $data['serial'], $data['creation']));
     }
     
@@ -89,8 +89,8 @@ class PID extends BaseObject {
     /**
      * {@inheritdoc}
      */
-    function encode(): string {
-        $node = Encoder::encodeAny($this->node);
+    function encode(Encoder $encoder): string {
+        $node = $encoder->encodeAny($this->node, false);
         $id = \pack('N', $this->id);
         $serial = \pack('N', $this->serial);
         

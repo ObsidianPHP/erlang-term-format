@@ -25,8 +25,8 @@ final class NewPIDTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testToArray(): void {
@@ -38,7 +38,7 @@ final class NewPIDTest extends TestCase {
             'creation' => 0
         );
         
-        $this->assertSame($l2, $l1->toArray());
-        $this->assertEquals($l1, NewPID::fromArray($l2));
+        self::assertSame($l2, $l1->toArray());
+        self::assertEquals($l1, NewPID::fromArray($l2));
     }
 }

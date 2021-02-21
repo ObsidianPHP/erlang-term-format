@@ -24,15 +24,15 @@ final class BitBinaryTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testToArray(): void {
         $b1 = new BitBinary(7, array(1));
         $b2 = array('bits' => 7, 'bytes' => array(1));
         
-        $this->assertSame($b2, $b1->toArray());
-        $this->assertEquals($b1, BitBinary::fromArray($b2));
+        self::assertSame($b2, $b1->toArray());
+        self::assertEquals($b1, BitBinary::fromArray($b2));
     }
 }

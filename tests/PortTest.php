@@ -25,8 +25,8 @@ final class PortTest extends TestCase {
         $decoded = (new Decoder())->decode($test);
         $encoded = (new Encoder())->encode($expected);
         
-        $this->assertEquals($expected, $decoded);
-        $this->assertSame($test, $encoded);
+        self::assertEquals($expected, $decoded);
+        self::assertSame($test, $encoded);
     }
     
     function testToArray(): void {
@@ -37,7 +37,7 @@ final class PortTest extends TestCase {
             'creation' => 5
         );
         
-        $this->assertSame($h2, $h1->toArray());
-        $this->assertEquals($h1, Port::fromArray($h2));
+        self::assertSame($h2, $h1->toArray());
+        self::assertEquals($h1, Port::fromArray($h2));
     }
 }
