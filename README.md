@@ -2,6 +2,10 @@
 
 PHP decoder and encoder for the Erlang Term Format.
 
+By default, the encoder encodes numeric strings as bigint. This behaviour can be changed by passing
+`Encoder::ENCODE_DIRECT_STRINGS_AS_BINARY` to the constructor,  so all strings directly given to `Encoder->encode` will be encoded as string.
+Or to always encode numeric strings as binary, pass `Encoder::ENCODE_STRINGS_AS_BINARY` to the constructor.
+
 # Installation
 
 Install this library through composer using
