@@ -190,7 +190,7 @@ class Encoder {
     protected function encodeMap($data): string {
         $map = '';
         foreach($data as $key => $value) {
-            if($key[0] === ':') {
+            if(\is_string($key) && $key[0] === ':') {
                 $map .= Atom::fromArray(array('atom' => \mb_substr($key, 1)))->encode($this);
             } else {
                 $map .= $this->encodeAny($key, false);
