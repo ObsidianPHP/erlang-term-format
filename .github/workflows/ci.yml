@@ -20,7 +20,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: gmp
           coverage: xdebug
-      - run: sudo apt-get update && sudo apt-get install libgmp-dev -y && sudo -E docker-php-ext-install gmp && sudo -E docker-php-ext-enable gmp
       - run: composer install --no-interaction
       - run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml.dist --coverage-text
