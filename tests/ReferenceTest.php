@@ -27,7 +27,7 @@ final class ReferenceTest extends TestCase {
         
         $bytes = array(131, 101, 119, 4, 115, 116, 114, 101, 97, 109);
         $bytes = \array_merge($bytes, $binid);
-        //$bytes[] = 0;
+        $bytes[] = 0;
         
         $test = \pack('C*', ...$bytes);
         $expected = new Reference((new Atom(\get_resource_type($res))), $id, 0);
