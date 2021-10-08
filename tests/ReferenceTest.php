@@ -25,7 +25,7 @@ final class ReferenceTest extends TestCase {
         $binid = \pack('N', $id);
         $binid = \unpack('C*', $binid);
         
-        $bytes = array(131, 101, 119, 4, 99, 117, 114, 108);
+        $bytes = array(131, 101, 119, 4, 115, 116, 114, 101, 97, 109);
         $bytes = \array_merge($bytes, $binid);
         $bytes[] = 0;
         
