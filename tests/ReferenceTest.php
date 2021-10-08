@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
 final class ReferenceTest extends TestCase {
     function testReference(): void {
         // fake test for reference
-        $res = \curl_init();
+        $res = \fopen(__FILE__, 'r');
         $id = (int) $res;
         
         $binid = \pack('N', $id);
