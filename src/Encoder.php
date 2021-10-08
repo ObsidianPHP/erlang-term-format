@@ -110,14 +110,18 @@ class Encoder {
                         (!$external && $this->encodeStrings === self::ENCODE_DIRECT_STRINGS_AS_BINARY)
                     ) && \is_numeric($input) && \preg_match('/[^0-9\-]/u', $input) === 0
                 ) {
-                    $gmp = @\gmp_init($input);
-                    
-                    if($gmp instanceof \GMP) {
-                        if(\gmp_cmp($gmp, static::$gmpTop) <= 0 && \gmp_cmp($gmp, static::$gmpBottom) >= 0) {
-                            return $this->encodeSmallBig($gmp);
-                        }
+                    try {
+                        $gmp = @\gmp_init($input);
                         
-                        return $this->encodeLargeBig($gmp);
+                        if($gmp instanceof \GMP) {
+                            if(\gmp_cmp($gmp, static::$gmpTop) <= 0 && \gmp_cmp($gmp, static::$gmpBottom) >= 0) {
+                                return $this->encodeSmallBig($gmp);
+                            }
+                            
+                            return $this->encodeLargeBig($gmp);
+                        }
+                    } catch (\ValueError $_) {
+                        /* Continue regardless of error (Argument #1 is not an integer string) */
                     }
                 }
                 

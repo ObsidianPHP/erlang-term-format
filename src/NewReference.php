@@ -70,7 +70,7 @@ class NewReference extends BaseObject {
         
         $node = Atom::decodeIncrement($etf, $data, $pos);
         
-        $bcreation = \substr(\decbin($data[++$pos]), 0, 2);
+        $bcreation = \substr(\decbin(((int) $data[++$pos])), 0, 2);
         $creation = (int) \bindec($bcreation);
         
         $id = array();

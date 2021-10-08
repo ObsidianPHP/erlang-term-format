@@ -19,13 +19,13 @@ use PHPUnit\Framework\TestCase;
 final class ReferenceTest extends TestCase {
     function testReference(): void {
         // fake test for reference
-        $res = \curl_init();
+        $res = \fopen(__FILE__, 'r');
         $id = (int) $res;
         
         $binid = \pack('N', $id);
         $binid = \unpack('C*', $binid);
         
-        $bytes = array(131, 101, 119, 4, 99, 117, 114, 108);
+        $bytes = array(131, 101, 119, 6, 115, 116, 114, 101, 97, 109);
         $bytes = \array_merge($bytes, $binid);
         $bytes[] = 0;
         
