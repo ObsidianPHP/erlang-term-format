@@ -75,7 +75,7 @@ class Reference extends BaseObject {
         $bid = \substr(\decbin($unid), 0, 18);
         $id = (int) \bindec($bid);
         
-        $bcreation = \substr(\decbin($data[$pos]), 0, 2);
+        $bcreation = \substr(\decbin(((int) $data[$pos])), 0, 2);
         $creation = (int) \bindec($bcreation);
         
         return (new static($node, $id, $creation));
