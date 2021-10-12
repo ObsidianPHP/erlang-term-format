@@ -34,10 +34,16 @@ class Reference extends BaseObject {
     /**
      * Constructor.
      * @param Atom|bool  $node
-     * @param int        $id
-     * @param int        $creation
+     * @param int        $id        This value can not be larger than 262143.
+     * @param int        $creation  This value can not be larger than 3.
      */
     function __construct($node, int $id, int $creation) {
+        if($id > 262143) {
+            throw new \InvalidArgumentException('Parameter $id can not be larger than 262143');
+        } elseif($creation > 3) {
+            throw new \InvalidArgumentException('Parameter $creation can not be larger than 3');
+        }
+        
         $this->node = $node;
         $this->id = $id;
         $this->creation = $creation;
@@ -67,16 +73,10 @@ class Reference extends BaseObject {
      */
     static function decode(Decoder $etf, string $data, int &$pos) {
         $node = Atom::decodeIncrement($etf, $data, $pos);
-        
         $pos++;
         
-        $unid = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos++])[1];
-        
-        $bid = \substr(\decbin($unid), 0, 18);
-        $id = (int) \bindec($bid);
-        
-        $bcreation = \substr(\decbin(((int) $data[$pos])), 0, 2);
-        $creation = (int) \bindec($bcreation);
+        $id = \unpack('N', $data[$pos++].$data[$pos++].$data[$pos++].$data[$pos++])[1];
+        $creation = \unpack('N', "\0\0\0".$data[$pos])[1];
         
         return (new static($node, $id, $creation));
     }
@@ -86,13 +86,9 @@ class Reference extends BaseObject {
      */
     function encode(Encoder $encoder): string {
         $node = $encoder->encodeAny($this->node, false);
+        $id = \pack('N', $this->id);
+        $creation = \pack('C', $this->creation);
         
-        $bid = \substr(\decbin($this->id), 0, 18);
-        $id = \pack('N', \bindec($bid));
-        
-        $bcreation = \substr(\decbin($this->creation), 0, 2);
-        $creation = \bindec($bcreation);
-        
-        return ETF::REFERENCE_EXT.$node.$id.\pack('C', $creation);
+        return ETF::REFERENCE_EXT.$node.$id.$creation;
     }
 }
