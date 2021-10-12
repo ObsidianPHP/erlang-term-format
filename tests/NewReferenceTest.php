@@ -21,7 +21,7 @@ final class NewReferenceTest extends TestCase {
         // #Reference<0.110178461.3583246337.247866>
         $test = \base64_decode("g3IAA3cNbm9ub2RlQG5vaG9zdAAAA8g61ZQAAQaRMJ0=");
         $expected = new NewReference(
-            (new Atom("nonode@nohost")),
+            (new Atom('nonode@nohost')),
             0,
             array(
                 247866, 3583246337, 110178461

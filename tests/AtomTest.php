@@ -124,7 +124,7 @@ final class AtomTest extends TestCase {
     
     function testSmallAtom(): void {
         $test = \base64_decode("g3MBYQ==");
-        $expected = new Atom("a");
+        $expected = new Atom('a');
         
         $decoded = (new Decoder())->decode($test);
         $encoded = \chr(131).$expected->encodeSmallLatin();
@@ -174,7 +174,7 @@ final class AtomTest extends TestCase {
     
     function testAtom(): void {
         $test = \base64_decode("g2QAAWE=");
-        $expected = new Atom("a");
+        $expected = new Atom('a');
         
         $decoded = (new Decoder())->decode($test);
         $encoded = \chr(131).$expected->encodeLatin();
