@@ -16,7 +16,6 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "ext-curl": "*",
         "phpunit/phpunit": "^8.0|^7.0"
     },
     "autoload": {
